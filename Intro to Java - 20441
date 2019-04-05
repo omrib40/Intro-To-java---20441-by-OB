@@ -1,7 +1,7 @@
 //Solution to questions for exams 2013-2019
 //Utility programs such as isValid(which used in recursive matrix problems) at the bottom of the page
 ```java
-
+System.out.println(x);
 ```
 -------------------------------------------------------------------------------------------------------------------------------------
 
