@@ -1,3 +1,6 @@
+//Solution to questions for exams 2013-2019
+//Utility programs such as isValid(which used in recursive matrix problems) at the bottom of the page
+-------------------------------------------------------------------------------------------------------------------------------------
 
 	//Exam 2013B - 83 - #Question1 - by OB
 	public static boolean balancedPat(int[] arr) {
@@ -18,4 +21,1633 @@
 
 	}
 	
+-------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2018a - 91 - #Question1 by OB
+	public static int cheapestRoute(int[] a ) {
+		if(a.length == 0) return 0;
+		
+		return cheapestRoute(a,0,0,Integer.MAX_VALUE);
+	}
 	
+	private static int cheapestRoute(int[] a, int i , int sum, int minR) {
+		
+		if(i >= a.length) return minR; //Out of boundries
+		if(i == a.length -1) return Math.min(sum+a[i], minR);
+
+		
+		return Math.min(cheapestRoute(a,i+1,sum+a[i],minR), cheapestRoute(a,i+2,sum+a[i],minR));
+	}
+-------------------------------------------------------------------------------------------------------------------------------------
+
+	//Exam 2016a - 92 - #Question1 by OB
+	public static int minPath(int[][] mat,int i , int j) {
+		return minPath2(mat,i,j,0,Integer.MAX_VALUE);
+	}
+	
+	private static int minPath2(int[][] mat, int i, int j, int count, int minSteps) {
+		
+		if(mat[i][j] != 0 && mat[i][j] != -1) {
+		return Math.min(count, minSteps);
+	}
+		
+		mat[i][j] = -1;
+		
+		//upRight
+		if(isValid(mat,i-2,j+1) && mat[i-2][j+1] != -1) {
+			minSteps = minPath2(mat,i-2,j+1,count+1,minSteps);
+			mat[i-2][j+1] += 1;
+		}
+		//upLeft
+		if(isValid(mat,i-2,j-1) && mat[i-2][j-1] != -1) {
+			minSteps = minPath2(mat,i-2,j-1,count+1,minSteps);
+			mat[i-2][j-1] += 1;
+		}
+		//leftDown
+		if(isValid(mat,i+1,j-2) && mat[i+1][j-2] != -1) {
+			minSteps = minPath2(mat,i+1,j-2,count+1,minSteps);
+			mat[i+1][j-2] += 1;	
+		}
+		//leftUp
+		if(isValid(mat,i-1,j-2) && mat[i-1][j-2] != -1) {
+			minSteps = minPath2(mat,i-1,j-2,count+1,minSteps);
+			mat[i-1][j-2] += 1;
+		}
+		//downLeft
+		if(isValid(mat,i+2,j-1) && mat[i+2][j-1] != -1) {
+			minSteps = minPath2(mat,i+2,j-1,count+1,minSteps);
+			mat[i+2][j-1] += 1;
+		}
+		//downRight
+		if(isValid(mat,i+2,j+1) && mat[i+2][j+1] != -1) {
+			minSteps = minPath2(mat,i+2,j+1,count+1,minSteps);
+			mat[i+2][j+1] += 1;
+		}
+		//rightDown
+		if(isValid(mat,i+1,j+2) && mat[i+1][j+2] != -1) {
+			minSteps = minPath2(mat,i+1,j+2,count+1,minSteps);
+			mat[i+1][j+2] += 1;
+		}
+		//rightUp
+		if(isValid(mat,i-1,j+2) && mat[i-1][j+2] != -1) {
+			minSteps = minPath2(mat,i-1,j+2,count+1,minSteps);
+			mat[i-1][j+2] += 1;
+		}
+		
+		return minSteps;			
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+   //Exam 2017B - 93 - #Question1 by OB
+	public static int cntTrueReg(boolean[][] mat) {
+		return cntTrueReg(mat,0,0,0);
+	}
+	
+	private static int cntTrueReg(boolean[][] mat, int i, int j, int count) {
+		if(i == mat.length - 1 && j == mat[0].length) return count;
+		
+		if(j == mat[i].length) {
+			return cntTrueReg(mat,i+1,0,count);
+		}
+		
+		if(mat[i][j]) {
+			count++;
+			regions(mat,i,j);
+		}
+		return cntTrueReg(mat,i,j+1,count);
+	}
+	
+	private static void regions(boolean[][] mat, int i, int j) {
+		mat[i][j] = false;
+		
+		//go Right
+		if(isValid(mat,i,j+1) && mat[i][j+1])
+			regions(mat,i,j+1);
+		//go Left
+		if(isValid(mat,i,j-1) && mat[i][j-1])
+			regions(mat,i,j-1);
+		//go Down
+		if(isValid(mat,i+1,j) && mat[i+1][j])
+			regions(mat,i+1,j);
+		//go Up
+		if(isValid(mat,i-1,j) && mat[i-1][j])
+			regions(mat,i-1,j);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2019a - 93 - #Question1 by OB
+	public static int count (String str, String pat) {
+		
+		return count(str,pat,0,0);
+	}
+	
+	private static int count(String str, String pat, int i, int j) {
+		
+		if(j == pat.length()) {
+			return 1;
+		}
+		if(i == str.length()) return 0;
+		
+		int c1 = 0;
+		if(str.charAt(i) == pat.charAt(j)) {
+			c1 = count(str,pat,i+1,j+1);
+		}
+
+		int cnt2 = count(str,pat,i+1,j);
+		return  cnt2+c1;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2015A - 85 - #Question1 by OB
+
+	public static int countRopes(int[][] mat) {
+		return countRopes(mat, 0, 0, 0);
+	}
+
+	private static int countRopes(int[][] mat, int i, int j, int count) {
+
+		if (j == mat[0].length)
+			return count;
+
+		count += howManyRopes(mat, i, j, 0);
+		return countRopes(mat, 0, j + 1, count);
+	}
+
+	private static int howManyRopes(int[][] mat, int i, int j, int tempCount) {
+
+		if (i == mat.length - 1) {
+			tempCount++;
+			return tempCount;
+		}
+		// Down
+		if (isValid(mat, i + 1, j) && mat[i][j] > mat[i + 1][j]) {
+			tempCount = howManyRopes(mat, i + 1, j, tempCount);
+		}
+		// DownRight
+		if (isValid(mat, i + 1, j + 1) && mat[i][j] > mat[i + 1][j + 1]) {
+			tempCount = howManyRopes(mat, i + 1, j + 1, tempCount);
+		}
+		// DownLeft
+		if (isValid(mat, i + 1, j - 1) && mat[i][j] > mat[i + 1][j - 1]) {
+			tempCount = howManyRopes(mat, i + 1, j - 1, tempCount);
+		}
+
+		return tempCount;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2017a - 86 - #Question1 by OB
+	// copy and xZero doesn't work and i haven't run this program.
+	public static boolean covers(int[][] mat, int[] arr, int k) {
+		if (allZero(arr))
+			return false;
+		else
+			return covers(mat, arr, k, 0);
+	}
+
+	private static boolean covers(int[][] mat, int[] arr, int k, int i) {
+
+		if (allZero(arr) && k >= 0)
+			return true;
+		if (k <= 0 || i == mat.length)
+			return false;
+
+		int[] dest = new int[arr.length];
+		copy(dest, arr); // copy all arr products to dest.
+		xZero(dest, mat[i]); // check similarity between dest and current mat[i]
+
+		boolean found1 = covers(mat, dest, k - 1, i + 1);
+
+		copy(dest, arr); // turn back dest to it's appereance before using xZero
+
+		boolean found2 = covers(mat, dest, k, i + 1); // step ahead, without checking current row in mat.
+
+		return (found1 || found2);
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2017a - 85 - #Quesion1 by OB
+	public static int edit(String s1, String s2) {
+		return edit(s1, s2, 0, 0, 0);
+	}
+
+	// Idea - find the amount of letters that are different between 2 strings, and
+	// subtract the difference from each string as it's same as adding and removing
+	// operations.
+	private static int edit(String s1, String s2, int i, int j, int equal) {
+
+		if ((i == s1.length() && j == s2.length()) || j == s2.length() || i == s1.length()) {
+			return (s1.length() - equal + s2.length() - equal);
+		}
+
+		if (s1.charAt(i) == s2.charAt(j)) {
+			return edit(s1, s2, i + 1, j + 1, equal + 1);
+		}
+
+		return Math.min(edit(s1, s2, i, j + 1, equal), edit(s1, s2, i + 1, j, equal));
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam2016B - 82 - #Question1 by OB
+	// sum method counts the sum of the array between the 2 index's
+	public static boolean isBalanced(int[] a, int k) {
+		return isBalanced(a, k, 0, a.length - 1);
+	}
+
+	private static boolean isBalanced(int[] a, int k, int left, int right) {
+		if (k == 0)
+			return true;
+		int p = where(a, left, left, right);
+
+		if (p == -1)
+			return false;
+
+		return (isBalanced(a, k - 1, left, p) || isBalanced(a, k - 1, p + 1, right));
+	}
+
+	private static int where(int[] a, int left, int p, int right) {
+
+		if (p > right)
+			return -1;
+
+		int sumA = sum(a, left, p);
+		int sumB = sum(a, p + 1, right);
+
+		if (sumA == sumB)
+			return p;
+
+		return where(a, left, p + 1, right);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam2015 - 89 - #Question1 by OB
+
+	public static boolean splitEqualMult(int[] a) {
+		return splitEqualMult(a, 0, 1, 1);
+	}
+
+	private static boolean splitEqualMult(int[] a, int i, int multA, int multB) {
+
+		if (i == a.length)
+			return (multA == multB);
+
+		return ((splitEqualMult(a, i + 1, multA * a[i], multB) || splitEqualMult(a, i + 1, multA, multB * a[i])));
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2013A - 92 - #Question1 - by OB
+	public static boolean match(int[] a, int[] pattern) {
+		return match(a, pattern, 0, 0, false);
+
+	}
+
+	private static boolean match(int[] a, int[] pattern, int i, int j, boolean found) {
+
+		if (j == pattern.length)
+			return true;
+		if (i == a.length)
+			return false;
+
+		if (checkNum(a[i], pattern[j], 1)) {
+			found = match(a, pattern, i + 1, j + 1, found);
+		}
+
+		boolean newCheck = match(a, pattern, i + 1, 0, found);
+
+		return (found || newCheck);
+
+	}
+
+	private static boolean checkNum(int num, int pat, int count) {
+
+		if (num > 0) {
+			num = num / 10;
+		}
+
+		if (num == 0) {
+			if (count == pat || ((count == 1 || count == 2) && pat == 0))
+				return true;
+			else
+				return false;
+		}
+
+		return checkNum(num, pat, count + 1);
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam - - #Question1 by OB
+	public static boolean isSumOf(int[] a, int n) {
+		int [] numbers = new int[n];
+		return isSumOf(a,n,0,0,numbers);
+	}
+	
+	private static boolean isSumOf(int[] a, int n, int i,int j, int[] numbers) {
+		
+		if(n == 0) {
+			printArray(numbers,0);
+			return true;
+		}
+		if(n<0 || i == a.length) return false;
+		
+		numbers[j] = a[i];
+		boolean check1 = isSumOf(a,n-a[i],i,j+1,numbers);
+		numbers[j] = 0;
+		boolean check2 = isSumOf(a,n,i+1,j,numbers);
+		
+		return (check1 || check2);
+		
+	}
+	
+	private static void printArray(int[] a, int i) {
+		if(i == a.length || a[i] == 0) return;
+		
+		System.out.print(a[i] + " ");
+		printArray(a,i+1);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	public static boolean isWay(int[] a) {
+		int[] reference = new int[a.length];
+		return isWay(a, 0, reference);
+	}
+
+	private static boolean isWay(int[] a, int i, int[] reference) {
+
+		if(i<0 || i >= a.length || reference[i] == - 1) return false;
+		if(i == a.length-1) return true;
+		
+		reference[i] = -1;
+		return(isWay(a,i+a[i],reference) || isWay(a,i-a[i],reference));
+	}
+	
+	
+	
+	public static boolean isWay2(int[] a) {
+		return isWay2(a,0,0);
+	}
+	
+	private static boolean isWay2(int[] a, int i, int prev) {
+		
+		if(i<0 || i >= a.length || a[i] == -1) return false;
+		if(i == a.length -1) return true;
+		
+		prev = a[i];
+		a[i] = -1; 
+		boolean right = isWay2(a,i+prev,prev);
+		boolean left = isWay2(a,i-prev,prev);
+	
+		
+		return(right || left);
+			
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2017a - 91 - #Question1 by OB
+	public static int knapSack(item[] items, int w) {
+		if(w == 0 || items.length == 0) return 0;
+		
+		return knapSack(items,w,0,0);
+	}
+	
+	private static int knapSack(item[] items, int w, int i, int maxVal) {
+		
+		if(w < 0) return maxVal - items[i-1].getValue();
+		if(i == items.length || w == 0) return maxVal;
+		
+		return Math.max(knapSack(items,w-items[i].getWeight(),i+1,maxVal+items[i].getValue()), knapSack(items,w,i+1,maxVal));
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2015B - 83 - #Question1 By OB
+	// This code doesn't suffice the following strings : s ="tttt" , f = "t" - wrong
+	// answer.
+
+	public static int lcs(String s, String t) {
+		return lcs(s, t, 0, 0, 0, 0);
+	}
+
+	private static int lcs(String s, String t, int i, int j, int max, int count) {
+
+		if (i == s.length() || j == t.length())
+			return Math.max(count, max);
+
+		if (s.charAt(i) == t.charAt(j)) {
+			max = lcs(s, t, i + 1, j + 1, count + 1, max);
+		}
+
+		return Math.max(max, Math.max(lcs(s, t, i + 1, j, count, max), lcs(s, t, i, j + 1, count, max)));
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2013B - 92 - #Question1 by OB	
+	public static int longestFlat(int[] a) {
+		if (a.length == 1)
+			return 1;
+		return longestFlat(a, 0, 0, 0);
+	}
+
+	private static int longestFlat(int[] a, int i, int maxFlat, int tempMax) {
+
+		if (i == a.length - 1)
+			return maxFlat;
+		
+		if (Math.abs(a[i] - a[i + 1]) >= 0 && Math.abs(a[i] - a[i + 1]) <= 1) 
+			tempMax = lengthFlatSequence(a, i, a[i], a[i + 1], maxFlat, 0);
+
+		maxFlat = Math.max(tempMax, maxFlat);
+		return longestFlat(a, i + 1, maxFlat, 0);
+	}
+
+	private static int lengthFlatSequence(int[] a, int i, int num, int num2, int maxFlat, int count) {
+
+		if (i == a.length)
+			return count;
+
+		if (a[i] == num || a[i] == num2) 
+			return lengthFlatSequence(a, i + 1, num, num2, maxFlat, count + 1);
+
+		return Math.max(count, maxFlat);
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	public static int longestSlope(int[][] mat, int num) {
+		return longestSlope(mat,num,0,0,1);
+	}
+	
+	private static int longestSlope(int[][] mat, int num, int i, int j, int max) {
+		
+		if(i== mat.length - 1 && j == mat[i].length -1) return max;
+		
+		if(j == mat[i].length) 
+			return longestSlope(mat,num,i+1,1,max);
+		
+		max = Math.max(max, countSlope(mat,num,i,j,1,max));
+		
+		return longestSlope(mat,num,i,j+1,max);
+	}
+	
+	private static int countSlope(int[][] mat, int num, int i , int j, int count,int max) {
+		
+		// goUp
+		if (isValid(mat, i - 1, j) && mat[i][j] == mat[i - 1][j] - num) {
+			count = countSlope(mat,num, i - 1, j, count + 1, max);
+		}
+		// goDown
+		if (isValid(mat, i + 1, j) && mat[i][j] == mat[i + 1][j] - num) {
+			count = countSlope(mat,num, i + 1, j, count + 1, max);
+		}
+		// goLeft
+		if (isValid(mat, i, j - 1) && mat[i][j] == mat[i][j - 1] - num) {
+			count = countSlope(mat,num, i, j - 1, count + 1, max);
+		}
+		// goRight
+		if (isValid(mat, i, j + 1) && mat[i][j] == mat[i][j + 1] - num) {
+			count = countSlope(mat,num, i, j + 1, count + 1, max);
+		}
+
+		return Math.max(count, max);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2014B - 85 - #Question1 by OB
+	public static int longestWorm(int[][] mat) {
+		return longestWorm(mat, 0, 0, 0);
+	}
+
+	private static int longestWorm(int[][] mat, int i, int j, int maxWorm) {
+
+		if (i == mat.length - 1 && j == mat[i].length - 1)
+			return maxWorm;
+
+		maxWorm = Math.max(countWorm(mat, i, j, 1, 0), maxWorm);
+
+		if (j == mat[i].length - 1) {
+			j = 0;
+			i++;
+			return longestWorm(mat, i, j, maxWorm);
+		}
+		
+		else
+			return longestWorm(mat, i, j + 1, maxWorm);
+
+	}
+
+	private static int countWorm(int[][] mat, int i, int j, int count, int max) {
+
+		// goUp
+		if (isValid(mat, i - 1, j) && mat[i][j] == mat[i - 1][j] - 1) {
+			max = countWorm(mat, i - 1, j, count + 1, max);
+		}
+		// goDown
+		if (isValid(mat, i + 1, j) && mat[i][j] == mat[i + 1][j] - 1) {
+			max = countWorm(mat, i + 1, j, count + 1, max);
+		}
+		// goLeft
+		if (isValid(mat, i, j - 1) && mat[i][j] == mat[i][j - 1] - 1) {
+			max = countWorm(mat, i, j - 1, count + 1, max);
+		}
+		// goRight
+		if (isValid(mat, i, j + 1) && mat[i][j] == mat[i][j + 1] - 1) {
+			max = countWorm(mat, i, j + 1, count + 1, max);
+		}
+
+		max = Math.max(count, max);
+		return max;
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2015B - 84 - #Question1 by OB
+	public static int longOrdNum(String s) {
+		if (isOnlyLetters(s, 0))
+			return 0;
+		else
+			return longOrdNum(s, 0, 1);
+	}
+
+	private static int longOrdNum(String s, int i, int count) {
+
+		if (i == s.length() - 1)
+			return count;
+
+		if (s.charAt(i) >= '0' && '9' >= s.charAt(i) && s.charAt(i) < s.charAt(i + 1))
+			count++;
+		else
+			count = 1;
+
+		return Math.max(count, longOrdNum(s, i + 1, count));
+	}
+
+	// if the string contain only letters
+	private static boolean isOnlyLetters(String s, int i) {
+
+		if (i == s.length())
+			return true;
+		if (s.charAt(i) >= '0' && s.charAt(i) <= '9')
+			return false;
+		return isOnlyLetters(s, i + 1);
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2015A - 91 - #Question1 By OB
+	public static int makeSum(int[] lengths, int k, int num) {
+		return makeSum(lengths, k, num, 0, 0);
+	}
+
+	private static int makeSum(int[] lengths, int sum, int sticks, int i, int count) {
+
+		if (sum == 0)
+			return 1;
+
+		if (sticks == 0 || i == lengths.length || sum <= 0)
+			return 0;
+
+		count += makeSum(lengths, sum - lengths[i], sticks - 1, i, count) + makeSum(lengths, sum, sticks, i + 1, count);
+
+		return count;
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2016a - 83 - #Question1 by OB
+	public static int maximalDrop(int[][] mat) {
+		
+		return maximalDrop(mat,0,Integer.MAX_VALUE);
+	}
+	
+	private static int maximalDrop(int[][] mat, int num, int min) {
+		
+		if(min != Integer.MAX_VALUE) return min;	
+		
+		if(num + mat[0][0] > 0) {
+			min = findNum(mat,0,0,num,num+mat[0][0]);
+		}	
+		
+		return maximalDrop(mat,num+1,min);
+	}
+	
+	private static int findNum(int[][] mat, int i, int j, int num, int sum) {
+		
+		if(sum == 1 && i == mat.length -1 && j == mat[i].length -1) return num;
+		if(i == mat.length -1 && j == mat[i].length -1) return Integer.MAX_VALUE;
+		
+		int right = Integer.MAX_VALUE;
+		int down = Integer.MAX_VALUE;
+		
+		//goDown
+		if(isValid(mat,i+1,j) && sum+mat[i+1][j] > 0) {
+			down = findNum(mat,i+1,j,num,sum+mat[i+1][j]);
+		}
+		//goRight
+		if(isValid(mat,i,j+1) && sum+mat[i][j+1] > 0) {
+			right = findNum(mat,i,j+1,num,sum+mat[i][j+1]);
+		}
+		
+		return Math.min(down, right);
+		
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2016a - 87 - #Question1 by OB
+	public static int minDiff(int[] a) {
+		return minDiff(a,0,0,0);
+	}
+	
+	private static int minDiff(int[] a, int i, int groupA, int groupB) {
+		
+		if(i == a.length) return Math.abs(groupA - groupB);
+		
+		return Math.min(minDiff(a,i+1,groupA+a[i],groupB), minDiff(a,i+1,groupA,groupB+a[i]));
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	public static void mirror(int[] a) {
+		int[] b = new int[a.length];
+		copy(a, b, 0);
+		int i;
+		int j;
+
+		int mid = (a.length - 1) / 2;
+		if (a.length % 2 == 0) {
+			i = mid;
+			j = mid + 1;
+		} else
+			i = mid - 1;
+		j = mid + 1;
+
+		printArray(a, 0);
+
+		mirror(a, i, j, mid, b);
+	}
+
+	private static void mirror(int[] a, int i, int j, int mid, int[] b) {
+
+		int temp;
+		
+		if (i < 0 || j >= a.length)// bounderies of array
+			return;
+
+		temp = a[i];
+		a[i] = a[j];
+		a[j] = temp;
+		printArray(a, 0);
+
+		mirror(a, i - 1, j + 1, mid, b);
+		copy(b, a, 0);
+		mirror(a, i - 1, j + 1, mid, b);
+
+	}
+
+	private static void copy(int[] copyFrom, int[] copyTo, int ind) {
+
+		if (ind == copyFrom.length)
+			return;
+		copyTo[ind] = copyFrom[ind];
+		copy(copyFrom, copyTo, ind + 1);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2017b - 85 - #Question1 by OB
+	public static int oneFiveSeven(int n) {
+		if(n == 0) return 0;
+		return oneFiveSeven(n,0);
+	}
+	
+	private static int oneFiveSeven(int n, int minOp) {
+		if ( n < 0 ) return Integer.MAX_VALUE;
+		if ( n == 0) return minOp;
+		
+		return Math.min(oneFiveSeven(n-1,minOp+1),Math.min(oneFiveSeven(n-5,minOp+1), oneFiveSeven(n-7,minOp+1)));
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2019A - 85 - #Question1 by OB
+	//implemention is too long, can be done more efficiently.
+	public static int longestPalindrome(int[] arr) {
+		if(arr.length == 1) return 1;
+		return longestPalindrome(arr,0,1,1,0);
+	}
+	
+	private static int longestPalindrome(int[] arr, int i,int j,int count, int max) {
+		
+		if(j == arr.length) return max;
+			
+		if(arr[i] == arr[j]) {
+			count = longestPalindrome(arr,i,j,0);
+			max = Math.max(count, max);
+		}
+		
+		if(j != arr.length -1 && arr[i] == arr[j+1]) {
+			count = longestPalindrome(arr,i,j+1,1);
+			max = Math.max(count, max);
+		}
+		
+		return longestPalindrome(arr,i+1,j+1,1,max);
+
+	}
+		
+	private static int longestPalindrome(int[] arr,int i, int j, int count) {
+
+		if(i < 0 && j > arr.length -1) return count;
+		if(i<=0 && (j < arr.length - 1 && arr[i] == arr[j+1])) return longestPalindrome(arr,i,j+1,count+1);
+		if(j >= arr.length - 1 && (i>0 && arr[j] == arr[i-1])) return longestPalindrome(arr,i-1,j,count+1);
+		if(arr[i] == arr[j]) return longestPalindrome(arr, i-1,j+1,count+2);
+		
+		return count;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam2018b - 83 - #Question1 by OB
+	public static int prince(int[][] mat, int i, int j) {
+		int found =  prince(mat,i,j,1,Integer.MAX_VALUE);
+		if(found == Integer.MAX_VALUE) return -1;
+		else
+			return found;
+	}
+
+	
+	private static int prince(int[][] mat, int i , int j , int count, int minWay) {
+		
+		if(mat[i][j] == -1) return Math.min(count, minWay);
+			
+		
+		//goRight
+		if(isValid(mat,i,j+1) && (check(mat,i,j,j+1,false) || mat[i][j+1] == -1)) {
+			int temp = mat[i][j];
+			mat[i][j] = -10;
+			minWay = prince(mat,i,j+1,count+1,minWay);
+			mat[i][j] = temp;
+		}
+		//goLeft
+		if(isValid(mat,i,j-1) && (check(mat,i,j,j-1,false) || mat[i][j-1] == -1)) {
+			int temp = mat[i][j];
+			mat[i][j] = -10;
+			minWay = prince(mat,i,j-1,count+1,minWay);
+			mat[i][j] = temp;
+		}
+		//goUp
+		if(isValid(mat,i-1,j) && (check(mat,i,j,i-1,true) || mat[i-1][j] == -1)) {
+			int temp = mat[i][j];
+			mat[i][j] = -10;
+			minWay = prince(mat,i-1,j,count+1,minWay);
+			mat[i][j] = temp;
+		}
+		//goDown
+		if(isValid(mat,i+1,j) && (check(mat,i,j,i+1,true) || mat[i+1][j] == -1)) {
+			int temp = mat[i][j];
+			mat[i][j] = -10;
+			minWay = prince(mat,i+1,j,count+1,minWay);
+			mat[i][j] = temp;
+		}
+		
+			return minWay;
+	}
+	
+	
+	private static boolean check(int [][] mat,int i, int j, int next, boolean upDown) {
+		if(upDown) {
+			if(mat[i][j] == mat[next][j] - 1 || mat[i][j] == mat[next][j] || mat[i][j] == mat[next][j] + 1 || mat[i][j] == mat[next][j] + 2) return true;
+			else
+				return false;
+		}
+		else {
+			if(mat[i][j] == mat[i][next] - 1 || mat[i][j] == mat[i][next] || mat[i][j] == mat[i][next] + 1 || mat[i][j] == mat[i][next] + 2) return true;
+			else
+				return false;
+		}
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2018b - 81 - #Question1 by OB
+	public static void printAllSum2(int[]a, int sum) {
+		if(a.length == 0) System.out.println("None");
+		printAllSum2(a,sum,0,"");
+		
+	}
+	
+	private static void printAllSum2(int[] a, int sum, int i, String st) {
+		
+		if(i == a.length && sum == 0) System.out.println(st);
+		if(i == a.length) return;
+		
+		printAllSum2(a,sum-a[i],i+1, st+"1");
+		printAllSum2(a,sum,i+1,st+"0");
+		
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2014A - 85 - #Question1 by OB
+	public static void printPath(int[][] mat) {
+		printPath(mat, 0, 0);
+	}
+
+	private static void printPath(int[][] mat, int i, int j) {
+
+		System.out.print("(" + i + "," + j + ")" + ", ");
+
+		// goUp
+		if (isValid(mat, i + 1, j) && mat[i][j] < mat[i + 1][j]) {
+			printPath(mat, i + 1, j);
+			return;
+		}
+		// goDown
+		if (isValid(mat, i - 1, j) && mat[i][j] < mat[i - 1][j]) {
+			printPath(mat, i - 1, j);
+			return;
+		}
+
+		// goRight
+		if (isValid(mat, i, j + 1) && mat[i][j] < mat[i][j + 1]) {
+			printPath(mat, i, j + 1);
+			return;
+		}
+		// goLeft
+		if (isValid(mat, i, j - 1) && mat[i][j] < mat[i][j - 1]) {
+			printPath(mat, i, j - 1);
+			return;
+		}
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2016B - 87 - #Question1 by OB
+	public static int sets(int sum) {
+		if(sum == 0) return 1;
+		return sets(sum,1);
+		
+	}
+	
+	private static int sets(int sum, int i) {
+		
+		if(sum == 0) return 1;
+		if(sum < 0 || i > sum) return 0;
+		
+		
+		return sets(sum-i,i+1) + sets(sum,i+1);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2015A - 83 - #Question1 by OB
+	
+	public static int shortestPath(int[][] mat) {
+		return shortestPath(mat, 0, 0, 1, Integer.MAX_VALUE);
+	}
+
+	private static int shortestPath(int[][] mat, int i, int j, int count, int minPath) {
+
+		if (i == mat.length - 1 && j == mat[i].length - 1)
+			return Math.min(minPath, count);
+		;
+
+		// goUp
+		if (isValid(mat, i - 1, j) && mat[i][j] < mat[i - 1][j]) {
+			minPath =  shortestPath(mat, i - 1, j, count + 1, minPath);
+		}
+		// goDown
+		if (isValid(mat, i + 1, j) && mat[i][j] < mat[i + 1][j]) {
+			minPath =  shortestPath(mat, i + 1, j, count + 1, minPath);
+		}
+		// goRight
+		if (isValid(mat, i, j + 1) && mat[i][j] < mat[i][j + 1]) {
+			minPath =  shortestPath(mat, i, j + 1, count + 1, minPath);
+		}
+		// goLeft
+		if (isValid(mat, i, j - 1) && mat[i][j] < mat[i][j - 1]) {
+			minPath =  shortestPath(mat, i, j - 1, count + 1, minPath);
+		}
+
+		return minPath;
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	public static boolean splitEqualSum(int [] a) {
+		return splitEqualSum(a,0,0,0);
+	}
+	
+	private static boolean splitEqualSum(int [] a, int i, int groupA, int groupB) {
+
+		if(i == a.length)
+			return(groupA == groupB);
+
+		
+		return (splitEqualSum(a,i+1,groupA+a[i],groupB) || splitEqualSum(a,i+1,groupA,groupB+a[i]));
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2019a - 84 - #Question1 by OB
+	public static boolean sumPower(int num) {
+		if(num == 1 || num == 3) return true;
+		return sumPower(num,0);
+	}
+	
+	private static boolean sumPower(int num, int pow) {
+		
+		if(num == 0) return true;
+		if(num < 0 || Power(1,pow) > num) return false;
+
+		return(sumPower(num-Power(1,pow),pow+1) || sumPower(num,pow + 1));
+	}
+	
+	private static int Power(int p, int i) {
+		
+		if(i == 0) return p;
+		
+		else
+			return Power(p*3,i-1);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2017b - 84 - #Question1 by OB
+	public static int ways(int k, int n) {
+		if (n == 0 && k == 0) return 0;
+		
+		return ways(k,n,0);
+	}
+	
+	private static int ways(int k, int n, int count) {
+		if(n == 0 && k == 0) return 1;
+		if(k == 0 && n != 0) return 0;
+		
+		count = ways(k-1,n-1,count) + ways(k-1,n+1,count);
+		return count;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	public static int howManySorted(int n, int max) {
+		if(n == 0) {
+			return 1;
+		}
+		if(max == 0) {
+			return 0;
+		}
+		
+		return howManySorted(n-1,max) + howManySorted(n, max -1);
+	}
+	
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+//****************************************************Part II**********************************************************************
+//***********************************************Complexity questions**************************************************************
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2019 - 84 - #Question 2 by OB //O(n)
+	public static int average(int[] arr) {
+		int groupB = 0;
+		int index = -1;
+		int groupA = 0;
+		int maxAvg = 0;
+
+		for (int i = 0; i < arr.length; i++) {// sum array elements and assign to groupB. O(n)
+			groupB += arr[i];
+		}
+
+		for (int j = 0; j < arr.length - 1; j++) { //O(n)
+			groupA += arr[j];
+			groupB -= arr[j];
+			int currentAvg = Math.abs((groupB / (arr.length - (j + 1))) - (groupA / (j + 1)));
+
+			if (currentAvg > maxAvg) {
+				maxAvg = currentAvg;
+				index = j;
+			}
+
+		}
+
+		System.out.println("print maxdiff " + maxAvg);
+		return index;
+
+	}
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+    public static int countTriplets(int[] arr, int num) {
+        int cnt = 0;
+        int low = 0;
+        int mid = 1;
+        int high = arr.length - 1;
+
+        while (high != mid) { // time comp: O(n^2). while high and low are doing O(n) together, middle is running beside them.
+        	int sum = arr[low] + arr[mid] + arr[high];
+            if (sum < num) {
+                cnt += (high - mid);
+                if (mid + 1 != high)
+                    mid++;
+                else {
+                    low++;
+                    mid = low + 1;
+                }
+            } else
+                high--;
+        }
+        return cnt;
+    }
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2018b - 91 - #Question2 by OB **Complexity is O(lgn) since the maximum sub array which contain only zero's is length k so it's klgn --> O(lgn)**
+	public static int findAlmostSorted(int[] a, int num) {
+		
+		int high = a.length -1;
+		int low = 0;
+		
+		while(high >= low && a[low] != num && a[high] != num) {
+			int mid = (low+high)/2;
+			
+			if(a[mid] == 0) { // find the next number that is not zero.
+				for(int i = mid; i <= high && a[mid] == 0; i++) {
+					if(a[i] != 0) mid = i;
+				}
+			}
+			//regular binary search.
+			if(a[mid] == num) 
+				return mid;
+			else if(a[mid] > num) 
+				high = mid -1;
+			else
+				low = mid+1;
+		}
+		
+		if(a[low] == num) 
+			return low;
+		else if(a[high] == num) 
+			return high;
+		else
+			return -1;
+		
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2017B - 83 and 93 - #Question2 by OB **Complexity is O(lgn)**
+	public static int findNum2(Range rangeA[], int num) {
+		
+		int high = rangeA.length -1;
+		int low = 0;
+		
+		while(high >= low) {
+			int mid = (high+low)/2;
+			int center = rangeA[mid].getCenter();
+			int radius = rangeA[mid].getRadius();
+			
+			if(center+radius >= num && center-radius <= num) return mid;
+			
+			else if(center - radius > num) high = mid -1;
+			
+			else
+				low = mid + 1;
+		}
+		
+		return -1;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2018b - 83 - #Question2 by OB **Complexity is O(lgn)**
+	public static int findSingle(int[] a) {
+		if(a.length == 1 || a[0] != a[1]) return 0;
+		if(a[a.length -1] != a[a.length -2]) return a.length - 1;
+		
+		int high = a.length -1;
+		int low = 0;
+		
+		while(high >= low) {
+			int mid = (high+low) /2;
+			if(a[mid] != a[mid+1] && a[mid] != a[mid-1]) return mid;
+			else if(a[mid] == a[mid+1]) low = mid+1;
+			else
+				high = mid -1;
+			
+		}
+		
+		return -1;
+		
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2018b - 83 - #Question2 not my solution
+	public static int findSingle(int[] a) {                     
+	    int low = 0, high = a.length - 1, mid;
+
+	    while (low <= high) {
+	        mid = (low + high) / 2;
+	        if ((a[mid] != a[mid - 1]) && (a[mid] != a[mid + 1]))
+	            return a[mid];         // Found!
+
+	        if ((a[mid] == a[mid - 1]))  // Go to the right
+	            low = mid + 1;
+
+	        else
+	            high = mid - 1;          // Go to the left
+
+	    } 
+
+	    return -1;
+	} // end of method
+------------------------------------------------------------------------------------------------------------------------------------
+	public static int findSmallest(int[] arr) {
+
+		int res = 1;
+		for (int i = 0; i < arr.length && res >= arr[i]; i++) {
+
+			res = res + arr[i];
+		}
+		return res;
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2017 - 84 - #Question 2 By OB **Complexity O(n)**
+	public static boolean findSum(int[] a, int sum) {
+
+		int p = 0;
+		int high = a.length -1;
+		int low = 0;
+		
+		for(int i = 0; i < a.length -1; i++) {//find the breakpoint
+			if(a[i] > a[i+1]) p = i+1;
+		}
+		
+		if(p!= 0) {
+			low = p;
+			high = p -1;
+		}
+		
+		while( high != low) {
+			int currSum = a[high] + a[low];
+			if(currSum == sum) return true;
+			else if(currSum > sum) {
+				if(high != 0) high--;
+				else {
+					high = a.length -1;}
+			}
+			else {
+				if(low != a.length -1) low++;
+				else
+					low = 0;
+			}
+		}
+
+		return false;
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2016a - 83 - #Question2 by OB **Complexity - O(logn)**
+	//also appeared in 2015a - 89
+	public static boolean findX(int[] arr,int x) {
+		if(arr.length == 2) return(arr[0]+arr[1] == x);
+		
+		int high = arr.length -1; int low = 0;
+		
+		while(low < high) {
+				int mid = (high+low)/2;
+				
+				if(arr[mid] + arr[mid+1] == x || arr[mid] + arr[mid-1] == x) return true;
+				else if(arr[mid] + arr[mid+1] > x) {
+					high = mid -1;
+				}
+				else
+					low = mid + 1;
+		}
+		return false;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2017 - 87 - #Question 2 By OB //Complexity O(n^2)
+	public static boolean isPythagorean(int[] arr) {
+
+		for (int i = 0; i < arr.length; i++) {// O(n)
+			int low = i;
+			int mid = low + 1;
+			int high = arr.length - 1;
+
+			while (high > mid && low >= 0) {// (O(n) indent loop
+				int tempMax = arr[high] * arr[high];
+				int sum = arr[mid] * arr[mid] + arr[low] * arr[low];
+				if (sum == tempMax)
+					return true;
+
+				else if (sum < tempMax) 
+					high--;
+				 else
+					low--;
+			}
+
+		}
+
+		return false;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2015A - 83 - #Question2 by OB **Complexity O(n^2)**
+	public static boolean isSum3(int[] a, int x) {
+		
+		if(a.length <= 2) return false;
+		int high = a.length -1;
+		
+		for(int i = 0; i <= a.length - 2; i++) {
+			int low = i;
+			int j = i+1;
+			
+			while(low >= 0) {
+				int res = a[high]+a[j]+a[low];
+				if(res == x) return true;
+				else if(res > x) {
+					if(high > j+1) high--;
+					else
+						low--;
+				}
+				else
+					low--;
+				
+			}
+		}
+		return false;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2016b - 82 - #Question2 by OB **Complexity is O(n)**
+	//if Num is 24 for example it will return true, which is false but it's just adding 1 if statement to check if the range is 1.
+	public static boolean isSum(Range [] a, int x) {
+		
+		int high = a.length -1;
+		int low = 0;
+		
+		while(high >= low) {
+			int maxNum = a[high].getLargest() + a[low].getLargest();
+			int minNum = a[high].getSmallest() + a[low].getSmallest();
+			
+			if(maxNum >= x && minNum <= x) return true;
+			else if(maxNum > x) high--;
+			else
+				low++;
+		}
+		
+		return false;
+	}
+
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2013b - 85 - #Question2 by OB **Complexity is O(lgn)**
+	public static int minAbsSum(int[] a) {
+		if(a.length == 1) return 0;
+		if(a[0] > 0) return a[0]+a[1];
+		
+		int high = a.length -1;
+		int low = 0;
+		while(high > low) {
+			int mid = (high+low)/2;
+			if(a[mid] > 0 && a[mid-1] < 0) {
+				return (Math.abs(a[mid]) + Math.abs(a[mid-1]));
+			}
+			else if(a[mid] > 0 && a[mid-1] > 0) {
+				high = mid -1;
+			}
+			
+			else
+				low = mid+1;
+		}
+		
+		return -1;
+	}
+	
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2019A - 85 - #Question2 by OB , Complexity is O(logn)
+	public static int missingValue2(int[] a) {
+		int high = a.length -1;
+		int low = 0;
+		int d = (a[high] - a[low])/(a.length);
+		
+		while(high > low) {
+			int mid = (high+low)/2;
+			double rightArray =(a[high] - a[mid]);
+			double leftArray = (a[mid] - a[low]);
+			double rightNum = (high-mid);
+			double leftNum = (mid - low);
+			double rightD = (rightArray / rightNum);
+			double leftD = (leftArray / leftNum);
+			
+			if( rightD == 2*d) return(a[mid] + d);
+			if( leftD == 2*d) return(a[low] + d);
+			else if(rightD > leftD) low = mid+1;
+			else
+				high = mid -1;
+	
+		}
+		
+		return -1;
+			
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2016a - 87 - #Question2 by OB - **Complexity O(n)**
+	public static int passingCars2(int[] a) {
+		
+		int countCross = 0;
+		int countZeros = 0;
+		
+		for(int i = 0; i < a.length; i++) {
+			if(a[i] == 0) {
+				countZeros++;
+			}
+			else 
+				countCross += countZeros;
+		}
+		return countCross;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Exam 2017 - 85 - #Question 2 by OB
+	public static void printClosest2(int[] a, int [] b, int x) {
+		int minDiff = Integer.MAX_VALUE;
+		int low = 0;
+		int i = 0;
+		int j = 0;
+		int high = b.length -1;
+		
+		while ( low <= a.length -1 && low >= 0 && high >= 0) {
+			int currDiff = Math.abs(a[low] + b[high] - x);
+			if(currDiff != 0 && currDiff < minDiff) {
+				minDiff = currDiff;
+				i = low;
+				j = high;
+				low++;
+			}
+			else if(currDiff >= minDiff) {
+				if(high!= 0) {
+					high --;
+				}
+				else
+					low--;
+			}
+			
+		}
+		System.out.println(a[i] + " and " + b[j]);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2015B - 86 - #Question2 by OB **Complexity is O(n)**
+	public static void printPairs(int[] a, int k) {
+
+		int i = 0;
+		int j = i + 1;
+
+		while (i < a.length && j < a.length) {
+			if (Math.abs(a[i] - a[j]) == k) {
+				System.out.println("(" + a[i] + "," + a[j] + ")");
+				i++;
+				j++;
+			} else if (Math.abs(a[i] - a[j]) > k) {
+				i++;
+			} else
+				j++;
+
+		}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2015b - 83 - #Question2 by OB **Complexity O(n)**
+	public static void replace(int[] a) {
+
+		int maxLocal = a[a.length - 1];
+
+		for (int i = a.length - 1; i >= 0; i--) {
+			int temp = a[i];
+			a[i] = maxLocal;
+
+			if (temp > maxLocal)
+				maxLocal = temp;
+		}
+
+		a[a.length - 1] = 0;
+		System.out.println("done");
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam2015b - 94 - #Question1 by OB **Complexity O(n)**
+	public static int smallestSub(int[] a, int k) {
+
+		int sum = 0;
+		int min = a.length + 1;
+		int count = 0;
+		int i = 0;
+
+		while (i < a.length) {
+			if (sum <= k) {
+				count++;
+				sum += a[i];
+				i++;
+			}
+
+			if (sum > k) {
+				min = Math.min(count, min);
+				count--;
+				sum -= a[i - 1 - count];
+			}
+		}
+
+		return min;
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2018a - 91 - #Question2 by OB
+	public static void sortMod(int[] a, int k) { // Complexity is O(kn) == O(n)
+
+		for (int i = k; i >= 0; i--) { // K in constant so this loops run k times.
+
+			for (int j = 0; j < a.length - 1; j++) { // This loops will run k times * n each time.
+
+				if (a[j] % k > a[j + 1] % k) {
+					int temp = a[j];
+					a[j] = a[j + 1];
+					a[j + 1] = temp;
+				}
+			}
+		}
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2016 - 91 - #Question2 by OB **Complexity O(logn)**
+	public static int[] findUFO(Space tmp) {
+
+		int down = tmp.getSize();
+		int right = tmp.getSize();
+		int up = 0;
+		int left = 0;
+
+		while (down != up && right != left) {
+
+			int midRow = (up + down) / 2; // mid value up down
+			int midCol = (right + left) / 2; // mid value left right
+
+			int[] arr = sp.ask(midRow, midCol); // get current values
+			if (arr[0] == 0 && arr[1] == 0)
+				return arr; // if we found the space
+			if (arr[0] == -1)
+				up = midRow - 1; // if space is above us
+			else if (arr[0] == 1)
+				down = midRow + 1; // if space is beneath us
+			if (arr[1] == -1)
+				right = midCol - 1; // if space is at our left side
+			else if (arr[1] == 1)
+				left = midCol + 1; // if space is at our right side
+
+		}
+
+		return null;
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2015A - 85 - #Question2 by OB **Complexity is O(n)**
+	public static boolean splitTo3(int[] arr) {
+		if (arr[arr.length - 1] < 0 || arr[0] > 0)
+			return false;
+
+		int index = -1;
+		// Method to find the point where the array turns from negative to positive
+		// This method could be dont also by binary search, but it doesn't make it more
+		// efficent as next method is O(n)
+		for (int i = 0; i < arr.length - 1; i++) {
+			if (arr[i] < 0 && arr[i + 1] > 0)
+				index = i;
+		}
+		int low = index;
+		int high = index + 1;
+		int sum = arr[low] + arr[high];
+
+		// This method will find if there is any sets that suffice the conditions
+		while (low > 0 && high < arr.length - 1) {
+			if (sum > 0) {
+				low--;
+				sum += arr[low];
+			} else if (sum < 0) {
+				high++;
+				sum += arr[high];
+			} else
+				return true;
+
+		}
+		return false;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2016B - 87 - #Question2 by OB **Complexity O(n)**
+	// Part 1
+	public static int subStrC(String s, char c) {// O(n)
+
+		int count = 0;
+		int total = 0;
+
+		for (int i = 0; i < s.length(); i++) {
+			if (s.charAt(i) == 'c') {
+				count++;
+			}
+			if (count == 3) {
+				total++;
+				count--;
+			}
+		}
+
+		return total;
+	}
+
+	// Part 2
+	public static int subStrMaxC(String s, char c, int k) {// O(n)
+
+		int count = 0;
+		int total = 0;
+
+		for (int i = 0; i < s.length(); i++) {
+
+			if (s.charAt(i) == 'c') {
+				count++;
+				if (count >= 2 && count - 2 <= k) {
+					total += count - 1;
+				}
+			}
+		}
+		return total;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// first Question of this exam.
+	public static boolean sum2(int[] a, int num) {
+
+		int high = a.length - 1;
+		int low = 0;
+
+		while (high > low) {
+
+			if (a[high] + a[low] == num)
+				return true;
+
+			else if (a[high] + a[low] > num) {
+				high--;
+			} else
+				low++;
+		}
+
+		return false;
+
+	}
+
+	// Exam 2015A - 83 - #Question 2 by OB **Complexity O(n^2)**
+	public static boolean sum3(int[] a, int num) {
+
+		for (int i = 0; i < a.length - 2; i++) {
+
+			int num1 = i;
+			int num2 = i + 1;
+			int num3 = a.length - 1;
+
+			while (num3 > num2) {
+				if (a[num1] + a[num3] + a[num2] == num)
+					return true;
+				else if (a[num1] + a[num3] + a[num2] > num) {
+					num3--;
+				} else
+					num2++;
+			}
+		}
+
+		return false;
+
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	// Exam 2018a - 85 - #Question2 **Complexity O(n)**
+	public static int newWhat(int[] a) {
+
+		int sumArray = 0;
+		int high = a.length - 1;
+		int low = 0;
+		int count = 1;
+
+		for (int i = 0; i < a.length; i++) {
+			sumArray += a[i];
+		}
+
+		if (sumArray % 2 == 1)
+			return a.length;
+
+		else
+			while (high >= low) {
+				if (a[high] % 2 == 1)
+					return a.length - count;
+				else if (a[low] % 2 == 1)
+					return a.length - count;
+				else {
+					count += 2;
+					high--;
+					low++;
+				}
+
+			}
+
+		return -1;
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+	//Maman 14 - 2019a - Amir-Tamar **O(n)**
+	public static void winner(int[] arr) {
+		int evenSum = 0;
+		int oddSum = 0;
+
+		for (int i = 0; i < arr.length; i++) {
+			if (i % 2 == 0) {
+				evenSum += arr[i];
+			} else {
+				oddSum += arr[i];
+			}
+		}
+
+		boolean even = evenSum > oddSum;
+
+		int amirSum = 0;
+		int tamarSum = 0;
+
+		for (int i = 0; i < arr.length / 2; i++) {
+			int amir, tamar;
+
+			if (even == (i % 2 == 0)) {
+				amir = arr[i];
+				tamar = arr[arr.length - 1 - i];
+			} else {
+				amir = arr[arr.length - 1 - i];
+				tamar = arr[i];
+			}
+
+			amirSum += amir;
+			tamarSum += tamar;
+			System.out.println("Amir took " + amir);
+			System.out.println("Tamar took " + tamar);
+		}
+
+		System.out.println("Final Score:");
+		System.out.println("Amir total " + amirSum);
+		System.out.println("Tamar total " + tamarSum);
+	}
+------------------------------------------------------------------------------------------------------------------------------------
+//******************************************************Utility Porgrams***********************************************************
+
+	private static boolean isValid(int[][] mat, int i, int j) {
+		return (i >= 0 && i < mat.length && j >= 0 && j < mat[i].length);
+	}
+
+------------------------------------------------------------------------------------------------------------------------------------
