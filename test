@@ -1,3 +1,4 @@
+	<script src="https://gist.github.com/1009439.js"></script>
 	//Exam 2013B - 83 - #Question1 - by OB
 	public static boolean balancedPat(int[] arr) {
 	
