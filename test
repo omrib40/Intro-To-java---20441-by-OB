@@ -1,0 +1,20 @@
+	//Exam 2013B - 83 - #Question1 - by OB
+	public static boolean balancedPat(int[] arr) {
+	
+		if (arr.length % 2 > 0)	return false;
+		return balancedPat(arr, 0, 0, 0, 0, 0);
+	}
+
+	private static boolean balancedPat(int[] a, int i, int groupA, int groupB, int countA, int countB) {
+
+		if (countA + countB == a.length && countA == countB && groupA == groupB)
+			return true;
+		if (i == a.length)
+			return false;
+
+		return (balancedPat(a, i + 1, groupA + a[i], groupB, countA + 1, countB)
+				|| balancedPat(a, i + 1, groupA, groupB + a[i], countA, countB + 1));
+
+	}
+	
+	
